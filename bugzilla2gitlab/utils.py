@@ -74,6 +74,20 @@ def format_utc(datestr):
     return utc_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def get_gitlab_issue(gitlab_base_url, gitlab_project_id, bug, headers, verify):
+    url = "{}/projects/{}/issues/{}".format(gitlab_base_url, gitlab_project_id, bug)
+    try:
+        issue = _perform_request(url, "get", headers=headers, verify=verify, json=True)
+        print(
+            "Issue with ID [{}] in porject [{}] already exists, skipping".format(
+                issue["id"], issue["project_id"]
+            )
+        )
+        return True
+    except Exception as e:
+        return False
+
+
 def get_bugzilla_bug(bugzilla_url, bug_id):
     """
     Read bug XML, return all fields and values in a dictionary.
