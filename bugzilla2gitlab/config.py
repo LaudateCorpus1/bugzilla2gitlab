@@ -2,6 +2,7 @@ from collections import namedtuple
 import os, pickle
 
 import yaml
+from tqdm import tqdm
 
 from .utils import _perform_request
 
@@ -85,7 +86,7 @@ def _load_user_id_cache(path, gitlab_url, gitlab_headers, verify):
 
     gitlab_users = {}
     if not os.path.exists("gitlab_users.pickle"):
-        for user in bugzilla_mapping:
+        for user in tqdm(bugzilla_mapping):
             gitlab_username = bugzilla_mapping[user]
             uid = _get_user_id(gitlab_username, gitlab_url, gitlab_headers, verify=verify)
             gitlab_users[gitlab_username] = str(uid)
