@@ -4,6 +4,23 @@ from .utils import _perform_request, format_datetime, format_utc, markdown_table
 
 CONF = None
 
+def validate_user(bugzilla_user):
+    if bugzilla_user not in CONF.bugzilla_users:
+        raise Exception(
+            "Bugzilla user `{}` not found in user_mappings.yml. "
+            "Please add them before continuing.".format(bugzilla_user)
+        )
+
+
+def gitlab_user(bugzilla_user):
+    if bugzilla_user not in CONF.bugzilla_users:
+        return CONF.gitlab_misc_user
+
+    return CONF.bugzilla_users[bugzilla_user]
+
+def gitlab_userid(bugzilla_user):
+    return CONF.gitlab_users[gitlab_user(bugzilla_user)]
+
 
 class IssueThread:
     """
@@ -67,15 +84,15 @@ class Issue:
 
     def __init__(self, bugzilla_fields):
         self.headers = CONF.default_headers
-        validate_user(bugzilla_fields["reporter"])
-        validate_user(bugzilla_fields["assigned_to"])
+        # validate_user(bugzilla_fields["reporter"])
+        # validate_user(bugzilla_fields["assigned_to"])
         self.load_fields(bugzilla_fields)
 
     def load_fields(self, fields):
         self.title = fields["short_desc"]
-        self.sudo = CONF.gitlab_users[CONF.bugzilla_users[fields["reporter"]]]
+        self.sudo = gitlab_userid(fields["reporter"])
         self.assignee_ids = [
-            CONF.gitlab_users[CONF.bugzilla_users[fields["assigned_to"]]]
+            gitlab_userid(fields["assigned_to"])
         ]
         self.created_at = format_utc(fields["creation_ts"])
         self.status = fields["bug_status"]
@@ -220,7 +237,7 @@ class Issue:
                     email = re.match(regex, user_data, flags=re.M).group(1)
                     self.description += markdown_table_row("Reporter", email)
             # Add original reporter to the markdown table
-            elif CONF.bugzilla_users[fields["reporter"]] == CONF.gitlab_misc_user:
+            elif gitlab_user(fields["reporter"]) == CONF.gitlab_misc_user:
                 self.description += markdown_table_row("Reporter", fields["reporter"])
 
             self.description += ext_description
@@ -303,14 +320,14 @@ class Comment:
 
     def __init__(self, bugzilla_fields):
         self.headers = CONF.default_headers
-        validate_user(bugzilla_fields["who"])
+        # validate_user(bugzilla_fields["who"])
         self.load_fields(bugzilla_fields)
 
     def load_fields(self, fields):
-        self.sudo = CONF.gitlab_users[CONF.bugzilla_users[fields["who"]]]
+        self.sudo = gitlab_userid(fields["who"])
         # if unable to comment as the original user, put username in comment body
         self.created_at = format_utc(fields["bug_when"])
-        if CONF.bugzilla_users[fields["who"]] == CONF.gitlab_misc_user:
+        if gitlab_user(fields["who"]) == CONF.gitlab_misc_user:
             self.body = "By {} on {}\n\n".format(
                 fields["who"],
                 format_datetime(fields["bug_when"], CONF.datetime_format_string),
@@ -432,11 +449,3 @@ class Attachment:
         )
 
         return u"[{}]({})".format(self.file_description, upload_link)
-
-
-def validate_user(bugzilla_user):
-    if bugzilla_user not in CONF.bugzilla_users:
-        raise Exception(
-            "Bugzilla user `{}` not found in user_mappings.yml. "
-            "Please add them before continuing.".format(bugzilla_user)
-        )
