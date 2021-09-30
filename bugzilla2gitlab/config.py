@@ -116,7 +116,7 @@ def _load_milestone_id_cache(project_id, gitlab_url, gitlab_headers, verify):
     url = "{}/projects/{}/milestones".format(gitlab_url, project_id)
     result = _perform_request(url, "get", headers=gitlab_headers, verify=verify)
     if result and isinstance(result, list):
-        for milestone in result:
+        for milestone in tqdm(result):
             gitlab_milestones[milestone["title"]] = milestone["id"]
 
     return {"gitlab_milestones": gitlab_milestones}
