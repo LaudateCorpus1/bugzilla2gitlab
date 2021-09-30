@@ -1,5 +1,5 @@
 from collections import namedtuple
-import os
+import os, pickle
 
 import yaml
 
@@ -84,10 +84,16 @@ def _load_user_id_cache(path, gitlab_url, gitlab_headers, verify):
         bugzilla_mapping = yaml.safe_load(f)
 
     gitlab_users = {}
-    for user in bugzilla_mapping:
-        gitlab_username = bugzilla_mapping[user]
-        uid = _get_user_id(gitlab_username, gitlab_url, gitlab_headers, verify=verify)
-        gitlab_users[gitlab_username] = str(uid)
+    if not os.path.exists("gitlab_users.pickle"):
+        for user in bugzilla_mapping:
+            gitlab_username = bugzilla_mapping[user]
+            uid = _get_user_id(gitlab_username, gitlab_url, gitlab_headers, verify=verify)
+            gitlab_users[gitlab_username] = str(uid)
+        with open("gitlab_users.pickle", "wb") as f:
+            pickle.Pickler(f).dump(gitlab_users)
+    else:
+        with open("gitlab_users.pickle", "rb") as f:
+            gitlab_users = pickle.Unpickler(f).load()
 
     mappings = {}
     # bugzilla_username: gitlab_username
