@@ -19,22 +19,23 @@ class Migrator:
                 self.conf.bugzilla_password,
             )
         for bug in bug_list:
-            if not get_gitlab_issue(
-                self.conf.gitlab_base_url,
-                self.conf.gitlab_project_id,
-                bug,
-                self.conf.default_headers,
-                self.conf.verify,
-            ):
-                self.migrate_one(bug)
-            else:
-                print("Skipping: Issue with id [{}] already exists".format(bug))
+            self.migrate_one(bug)
 
     def migrate_one(self, bugzilla_bug_id):
         """
         Migrate a single bug from Bugzilla to GitLab.
         """
-        print("Migrating bug {}".format(bugzilla_bug_id))
+        print("Trying to migrate bug {}".format(bugzilla_bug_id))
         fields = get_bugzilla_bug(self.conf.bugzilla_base_url, bugzilla_bug_id)
-        issue_thread = IssueThread(self.conf, fields)
-        issue_thread.save()
+
+        if not get_gitlab_issue(
+                self.conf.gitlab_base_url,
+                self.conf.gitlab_project_id,
+                fields["bug_id"],
+                self.conf.default_headers,
+                self.conf.verify,
+        ):
+            issue_thread = IssueThread(self.conf, fields)
+            issue_thread.save()
+        else:
+            print("Skipping: Issue with id [{}] already exists".format(fields["bug_id"]))

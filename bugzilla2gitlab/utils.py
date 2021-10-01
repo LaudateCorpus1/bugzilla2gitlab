@@ -4,6 +4,7 @@ import dateutil.parser
 from defusedxml import ElementTree
 import pytz
 import requests
+import os
 
 SESSION = None
 
@@ -79,7 +80,7 @@ def get_gitlab_issue(gitlab_base_url, gitlab_project_id, bug, headers, verify):
     try:
         issue = _perform_request(url, "get", headers=headers, verify=verify, json=True)
         print(
-            "Issue with ID [{}] in porject [{}] already exists, skipping".format(
+            "Issue with ID [{}] in project [{}] already exists, skipping".format(
                 issue["id"], issue["project_id"]
             )
         )
@@ -122,9 +123,13 @@ def get_bugzilla_bug(bugzilla_url, bug_id):
 
 
 def _fetch_bug_content(url, bug_id):
-    url = "{}/show_bug.cgi?ctype=xml&id={}".format(url, bug_id)
-    response = _perform_request(url, "get", json=False)
-    return response.content
+    if os.path.exists(bug_id):
+        with open(bug_id, 'r') as f:
+            return f.read()
+    else:
+        url = "{}/show_bug.cgi?ctype=xml&id={}".format(url, bug_id)
+        response = _perform_request(url, "get", json=False)
+        return response.content
 
 
 def bugzilla_login(url, user, password):
@@ -158,25 +163,28 @@ def bugzilla_login(url, user, password):
         raise Exception("Failed to log in after {} attempts".format(max_login_attempts))
 
 
-def validate_list(integer_list):
+def validate_list(bug_list):
     """
     Ensure that the user-supplied input is a list of integers, or a list of strings
     that can be parsed as integers.
     """
-    if not integer_list:
+    if not bug_list:
         raise Exception("No bugs to migrate! Call `migrate` with a list of bug ids.")
 
-    if not isinstance(integer_list, list):
+    if not isinstance(bug_list, list):
         raise Exception(
             "Expected a list of integers. Instead recieved "
-            "a(n) {}".format(type(integer_list))
+            "a(n) {}".format(type(bug_list))
         )
 
-    for i in integer_list:
+    for bug in bug_list:
+        if os.path.exists(bug):
+            continue
+
         try:
-            int(i)
+            int(bug)
         except ValueError:
             raise Exception(
                 "{} is not able to be parsed as an integer, "
-                "and is therefore an invalid bug id.".format(i)
+                "and is therefore an invalid bug id.".format(bug)
             ) from ValueError
