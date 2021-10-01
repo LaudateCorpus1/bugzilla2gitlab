@@ -194,12 +194,18 @@ class Issue:
         blocklist = ""
         if fields.get("dependson"):
             for depends in fields.get("dependson"):
-                deplist += "[{}]({}) ".format(depends, link)
+                if CONF.use_bugzilla_id:
+                    deplist += "#{} ".format(depends)
+                else:
+                    deplist += "[{}]({}) ".format(depends, link)
             self.description += markdown_table_row("Depends On", deplist)
         if fields.get("blocked"):
             for blocked in fields.get("blocked"):
-                blocklist += "[{}]({}) ".format(blocked, link)
-            self.description += markdown_table_row("Blocked by", blocklist)
+                if CONF.use_bugzilla_id:
+                    blocklist += "#{} ".format(blocked)
+                else:
+                    blocklist += "[{}]({}) ".format(blocked, link)
+            self.description += markdown_table_row("Blocks", blocklist)
 
         # add first comment to the issue description
         attachments = []
