@@ -243,17 +243,20 @@ class Issue:
         if ext_description:
             # for situations where the reporter is a generic or old user, specify the original
             # reporter in the description body
-            if fields["reporter"] == CONF.bugzilla_auto_reporter:
-                # try to get reporter email from the body
-                _, part, user_data = ext_description.rpartition("Submitter was ")
-                # partition found matching string
-                if part:
-                    regex = r"^(\S*)\s?.*$"
-                    email = re.match(regex, user_data, flags=re.M).group(1)
-                    self.description += markdown_table_row("Reporter", email)
+            #if fields["reporter"] == CONF.bugzilla_auto_reporter:
+            #    # try to get reporter email from the body
+            #    _, part, user_data = ext_description.rpartition("Submitter was ")
+            #    # partition found matching string
+            #    if part:
+            #        regex = r"^(\S*)\s?.*$"
+            #        email = re.match(regex, user_data, flags=re.M).group(1)
+            #        self.description += markdown_table_row("Reporter", email)
             # Add original reporter to the markdown table
-            elif gitlab_user(fields["reporter"]) == CONF.gitlab_misc_user:
-                self.description += markdown_table_row("Reporter", fields["reporter"])
+            #elif gitlab_user(fields["reporter"]) == CONF.gitlab_misc_user:
+            #    self.description += markdown_table_row("Reporter", fields["reporter"])
+
+            if gitlab_user(fields["reporter"]) == CONF.gitlab_misc_user:
+                self.description += markdown_table_row("Reporter", "LLVM Bugzilla Contributor")
 
             self.description += ext_description
 
@@ -356,14 +359,15 @@ class Comment:
         self.sudo = gitlab_userid(fields["who"])
         # if unable to comment as the original user, put username in comment body
         self.created_at = format_utc(fields["bug_when"])
-        if gitlab_user(fields["who"]) == CONF.gitlab_misc_user:
-            self.body = "By {} on {}\n\n".format(
-                fields["who"],
-                format_datetime(fields["bug_when"], CONF.datetime_format_string),
-            )
-        else:
-            self.body = format_datetime(fields["bug_when"], CONF.datetime_format_string)
-            self.body += "\n\n"
+        self.body = ""
+        #if gitlab_user(fields["who"]) == CONF.gitlab_misc_user:
+        #    self.body += "By {} on {}\n\n".format(
+        #        fields["who"],
+        #        format_datetime(fields["bug_when"], CONF.datetime_format_string),
+        #    )
+        #else:
+        #    self.body += format_datetime(fields["bug_when"], CONF.datetime_format_string)
+        #    self.body += "\n\n"
 
         # if this comment is actually an attachment, upload the attachment and add the
         # markdown to the comment body
