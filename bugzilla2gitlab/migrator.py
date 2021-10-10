@@ -28,7 +28,8 @@ class Migrator:
         print("Trying to migrate bug {}".format(bugzilla_bug_id))
         fields = get_bugzilla_bug(self.conf.bugzilla_base_url, bugzilla_bug_id)
 
-        if not get_gitlab_issue(
+        if self.conf.dry_run or \
+           not get_gitlab_issue(
                 self.conf.gitlab_base_url,
                 self.conf.gitlab_project_id,
                 fields["bug_id"],
