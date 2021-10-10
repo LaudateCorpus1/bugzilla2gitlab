@@ -97,7 +97,7 @@ class Issue:
         self.created_at = format_utc(fields["creation_ts"])
         self.status = fields["bug_status"]
         self.create_labels(
-            fields["component"], fields.get("op_sys"), fields.get("keywords")
+            fields["product"], fields["component"], fields.get("op_sys"), fields.get("keywords")
         )
         self.bug_id = fields["bug_id"]
         milestone = fields["target_milestone"]
@@ -105,7 +105,7 @@ class Issue:
             self.create_milestone(milestone)
         self.create_description(fields)
 
-    def create_labels(self, component, operating_system, keywords):
+    def create_labels(self, product, component, operating_system, keywords):
         """
         Creates 4 types of labels: default labels listed in the configuration, component labels,
         operating system labels, and keyword labels.
@@ -114,9 +114,17 @@ class Issue:
         if CONF.default_gitlab_labels:
             labels.extend(CONF.default_gitlab_labels)
 
-        component_label = CONF.component_mappings.get(component)
-        if component_label:
-            labels.append(component_label)
+        if CONF.component_mappings:
+            component_label = CONF.component_mappings.get(component)
+            if component_label:
+                labels.append(component_label)
+
+        if CONF.product_mappings:
+            product_map = CONF.product_mappings.get(product)
+            if product_map:
+                component_label = product_map.get(component)
+                if component_label:
+                    labels.append(component_label)
 
         # Do not create a label if the OS is other. That is a meaningless label.
         if (

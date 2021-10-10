@@ -18,6 +18,7 @@ Config = namedtuple(
         "bugzilla_closed_states",
         "default_headers",
         "component_mappings",
+        "product_mappings",
         "bugzilla_users",
         "gitlab_users",
         "gitlab_misc_user",
@@ -58,6 +59,7 @@ def get_config(path):
             )
         )
     configuration.update(_load_component_mappings(path))
+    configuration.update(_load_product_mappings(path))
     return Config(**configuration)
 
 
@@ -135,3 +137,9 @@ def _load_component_mappings(path):
         component_mappings = yaml.safe_load(f)
 
     return {"component_mappings": component_mappings}
+
+def _load_product_mappings(path):
+    with open(os.path.join(path, "product_mappings.yml")) as f:
+        product_mappings = yaml.safe_load(f)
+
+    return {"product_mappings": product_mappings}
