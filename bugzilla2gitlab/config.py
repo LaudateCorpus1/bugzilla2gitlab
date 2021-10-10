@@ -58,6 +58,8 @@ def get_config(path):
                 configuration["verify"],
             )
         )
+    else:
+        configuration.update({'gitlab_milestones' : {}})
     configuration.update(_load_component_mappings(path))
     configuration.update(_load_product_mappings(path))
     return Config(**configuration)
