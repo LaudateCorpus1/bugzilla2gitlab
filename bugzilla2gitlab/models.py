@@ -222,14 +222,18 @@ class Issue:
         comment0 = fields["long_desc"][0]
         if fields["reporter"] == comment0["who"] and comment0["thetext"]:
             ext_description += "\n## Extended Description \n"
-            ext_description += "\n\n".join(re.split("\n+", comment0["thetext"]))
-            self.update_attachments(fields["reporter"], comment0, attachments)
+            desc = self.update_attachments(fields["reporter"], comment0, attachments)
+            if desc is not None:
+                ext_description += "\n\n" + desc
+            else:
+                ext_description += "\n\n".join(re.split("\n+", comment0["thetext"]))
             del fields["long_desc"][0]
 
         for i in range(0, len(fields["long_desc"])):
             comment = fields["long_desc"][i]
-            if self.update_attachments(fields["reporter"], comment, attachments):
-                to_delete.append(i)
+            if self.update_attachments(fields["reporter"], comment, attachments) is None:
+                break
+            to_delete.append(i)
 
         # delete comments that have already added to the issue description
         for i in reversed(to_delete):
@@ -265,11 +269,11 @@ class Issue:
         Fetches attachments from comment if authored by reporter.
         """
         if comment.get("attachid") and comment.get("who") == reporter:
-            filename = Attachment.parse_file_description(comment.get("thetext"))
+            filename, desc = Attachment.parse_file_description(comment.get("thetext"))
             attachment_markdown = Attachment(comment.get("attachid"), filename).save()
             attachments.append(attachment_markdown)
-            return True
-        return False
+            return desc
+        return None
 
     def validate(self):
         for field in self.required_fields:
@@ -372,9 +376,10 @@ class Comment:
         # if this comment is actually an attachment, upload the attachment and add the
         # markdown to the comment body
         if fields.get("attachid"):
-            filename = Attachment.parse_file_description(fields["thetext"])
+            filename, comment = Attachment.parse_file_description(fields["thetext"])
             attachment_markdown = Attachment(fields["attachid"], filename).save()
             self.body += attachment_markdown
+            self.body += comment
         else:
             self.body += fields["thetext"]
 
@@ -415,11 +420,12 @@ class Attachment:
 
     @classmethod
     def parse_file_description(cls, comment):
-        regex = r"^Created attachment (\d*)\s?(.*)$"
+        regex = r"^(Created|Comment on) attachment (\d*)\s?(.*)$"
         matches = re.match(regex, comment, flags=re.M)
         if not matches:
             raise Exception("Failed to match comment string: {}".format(comment))
-        return matches.group(2)
+        end = matches.end() + 1
+        return matches.group(3), comment[end:]
 
     def parse_file_name(self, headers):
         # Use real filename to store attachment but descriptive name for issue text
