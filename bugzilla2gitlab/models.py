@@ -195,9 +195,9 @@ class Issue:
 
         self.description += markdown_table_row("Version", fields.get("version"))
         self.description += markdown_table_row("OS", fields.get("op_sys"))
-        self.description += markdown_table_row(
-            "Architecture", fields.get("rep_platform")
-        )
+        #self.description += markdown_table_row(
+        #    "Architecture", fields.get("rep_platform")
+        #)
 
         deplist = ""
         blocklist = ""
