@@ -175,7 +175,8 @@ class Issue:
 
         if CONF.include_bugzilla_link:
             bug_id = fields["bug_id"]
-            link = "{}/show_bug.cgi?id={}".format(CONF.bugzilla_base_url, bug_id)
+            #link = "{}/show_bug.cgi?id={}".format(CONF.bugzilla_base_url, bug_id)
+            link="https://llvm.org/bz{}".format(bug_id)
             self.description += markdown_table_row(
                 "Bugzilla Link", "[{}]({})".format(bug_id, link)
             )
