@@ -34,6 +34,7 @@ Config = namedtuple(
         "include_bugzilla_link",
         "use_bugzilla_id",
         "verify",
+        "gzip",
     ],
 )
 

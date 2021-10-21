@@ -1,4 +1,5 @@
 import re
+import gzip
 
 from .utils import _perform_request, format_datetime, format_utc, markdown_table_row
 
@@ -466,11 +467,13 @@ class Attachment:
         url = "{}/attachment.cgi?id={}".format(CONF.bugzilla_base_url, self.id)
         result = _perform_request(url, "get", json=False, verify=CONF.verify)
         filename = self.parse_file_name(result.headers)
+        if CONF.gzip:
+            filename += ".gz"
 
         url = "{}/projects/{}/uploads".format(
             CONF.gitlab_base_url, CONF.gitlab_project_id
         )
-        f = {"file": (filename, result.content)}
+        f = {"file": (filename, gzip.compress(result.content) if CONF.gzip else result.content)}
         attachment = _perform_request(
             url,
             "post",
