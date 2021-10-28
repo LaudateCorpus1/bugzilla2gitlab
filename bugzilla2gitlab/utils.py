@@ -6,7 +6,7 @@ import pytz
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import os
+import os, re
 
 SESSION = None
 
@@ -41,7 +41,7 @@ def _perform_request(
         adapter = HTTPAdapter(max_retries=retry_strategy)
         SESSION.mount("https://", adapter)
         SESSION.mount("http://", adapter)
-    
+
     func = getattr(SESSION, method)
 
     if files:
@@ -131,6 +131,16 @@ def get_bugzilla_bug(bugzilla_url, bug_id):
 
     return bug_fields
 
+def replace_bug_links(comment):
+    res = (
+        (r'(http://|https://)?' + re.escape("bugs.llvm.org/show_bug.cgi?id=") + "(\d*)", r'#\2 '),
+        (r'(http://|https://)?(llvm.org/)?PR(\d*)', r'#\3 '),
+        (r'duplicate of bug (\d*)', r'duplicate of bug #\1 '),
+        (r'Bug (\d*) has been marked', r'Bug #\1 has been marked')
+        )
+    for pair in res:
+        comment = re.sub(pair[0], pair[1], comment)
+    return comment
 
 def _fetch_bug_content(url, bug_id):
     if os.path.exists(bug_id):
