@@ -193,6 +193,11 @@ class Issue:
                 "Resolved on",
                 format_datetime(fields["delta_ts"], CONF.datetime_format_string),
             )
+            # FIXME: parametrize
+            if fields["resolution"] == "DUPLICATE":
+                self.labels += ",duplicate"
+            elif fields["resolution"] == "INVALID":
+                self.labels += ",invalid"
 
         self.description += markdown_table_row("Version", fields.get("version"))
         self.description += markdown_table_row("OS", fields.get("op_sys"))
