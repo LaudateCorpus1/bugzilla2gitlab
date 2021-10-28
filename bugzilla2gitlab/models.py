@@ -185,7 +185,7 @@ class Issue:
         formatted_dt = format_datetime(
             fields["creation_ts"], CONF.datetime_format_string
         )
-        self.description += markdown_table_row("Created on", formatted_dt)
+        # self.description += markdown_table_row("Created on", formatted_dt)
 
         if fields.get("resolution"):
             self.description += markdown_table_row("Resolution", fields["resolution"])
