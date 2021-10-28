@@ -250,6 +250,18 @@ class Issue:
                 "Attachments", ", ".join(attachments)
             )
 
+        if gitlab_user(fields["reporter"]) == CONF.gitlab_misc_user:
+            self.description += markdown_table_row("Reporter", "LLVM Bugzilla Contributor")
+
+        ccs = []
+        for i in range(0, len(fields["cc"])):
+            username = gitlab_user(fields["cc"][i])
+            if username != CONF.gitlab_misc_user:
+                ccs.append('@' + username)
+
+        if ccs:
+            self.description += markdown_table_row("CC", ",".join(ccs))
+
         if ext_description:
             # for situations where the reporter is a generic or old user, specify the original
             # reporter in the description body
