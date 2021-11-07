@@ -262,6 +262,9 @@ class Issue:
         if ccs:
             self.description += markdown_table_row("CC", ",".join(ccs))
 
+        if fields.get("cf_fixed_by_commits"):
+            self.description += markdown_table_row("Fixed by commit(s)", fields["cf_fixed_by_commits"])
+            
         if ext_description:
             self.description += replace_bug_links(ext_description)
 
