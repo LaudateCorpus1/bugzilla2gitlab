@@ -383,7 +383,7 @@ class Comment:
             filename, comment = Attachment.parse_file_description(fields["thetext"])
             attachment_markdown = Attachment(fields["attachid"], filename).save()
             self.body += attachment_markdown
-            self.body += comment
+            self.body += replace_bug_links(comment)
         else:
             self.body += replace_bug_links(fields["thetext"])
 
