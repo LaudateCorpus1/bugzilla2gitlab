@@ -230,9 +230,9 @@ class Issue:
             ext_description += "\n## Extended Description \n"
             desc = self.update_attachments(fields["reporter"], comment0, attachments)
             if desc is not None:
-                ext_description += "\n\n" + desc
+                ext_description += "\n" + desc
             else:
-                ext_description += "\n\n".join(re.split("\n+", comment0["thetext"]))
+                ext_description += comment0["thetext"]
             del fields["long_desc"][0]
 
         for i in range(0, len(fields["long_desc"])):
