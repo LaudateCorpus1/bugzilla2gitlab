@@ -257,7 +257,7 @@ class Issue:
         for i in range(0, len(fields["cc"])):
             username = gitlab_user(fields["cc"][i])
             if username != CONF.gitlab_misc_user:
-                ccs.append('@' + username)
+                ccs.append('@' + str(username))
 
         if ccs:
             self.description += markdown_table_row("CC", ",".join(ccs))
