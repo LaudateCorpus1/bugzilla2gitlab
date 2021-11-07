@@ -132,11 +132,19 @@ def get_bugzilla_bug(bugzilla_url, bug_id):
     return bug_fields
 
 def replace_bug_links(comment):
+    # This performs some basic transformation and sanitizing of the links and references:
+    #  * Removes "in reply to comment #1" as it would reference issue, not comment
+    #  * Changes #N and @foo into their non-references counterparts
+    #  * Replaces bz links / URLs to issue references
     res = (
-        (r'(http://|https://)?' + re.escape("bugs.llvm.org/show_bug.cgi?id=") + "(\d*)", r'#\2 '),
-        (r'(http://|https://)?(llvm.org/)?PR(\d*)', r'#\3 '),
-        (r'duplicate of bug (\d*)', r'duplicate of bug #\1 '),
-        (r'Bug (\d*) has been marked', r'Bug #\1 has been marked')
+        (r'\(In reply to comment #(\d+)\)',r''),
+        (r'\(In reply to (.*?) from comment #(\d+)\)',r''),
+        (r'#(\d+)',r'#&#8203;\1'), # Insert "zero width space" character
+        (r'@(\w+)',r'@&#8203;\1'), # Insert "zero width space" character
+        (r'(http://|https://)?' + re.escape("bugs.llvm.org/show_bug.cgi?id=") + "(\d+)", r'#\2 '),
+        (r'(http://|https://)?(llvm.org/)?PR(\d+)', r'#\3 '),
+        (r'duplicate of bug (\d+)', r'duplicate of bug #\1 '),
+        (r'Bug (\d+) has been marked', r'Bug #\1 has been marked')
         )
     for pair in res:
         comment = re.sub(pair[0], pair[1], comment)
