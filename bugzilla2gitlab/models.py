@@ -90,7 +90,7 @@ class Issue:
         self.load_fields(bugzilla_fields)
 
     def load_fields(self, fields):
-        self.title = fields["short_desc"]
+        self.title = replace_bug_links(fields["short_desc"])
         self.sudo = gitlab_userid(fields["reporter"])
         self.assignee_ids = [
             gitlab_userid(fields["assigned_to"])
