@@ -188,6 +188,7 @@ class Issue:
         # self.description += markdown_table_row("Created on", formatted_dt)
 
         if fields.get("resolution"):
+            self.resolved_at = format_utc(fields["delta_ts"])
             self.description += markdown_table_row("Resolution", fields["resolution"])
             self.description += markdown_table_row(
                 "Resolved on",
@@ -337,7 +338,9 @@ class Issue:
         )
         data = {
             "state_event": "close",
+            "updated_at": self.resolved_at
         }
+
         self.headers["sudo"] = self.sudo
 
         _perform_request(
