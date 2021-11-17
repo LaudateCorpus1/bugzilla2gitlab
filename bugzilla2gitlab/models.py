@@ -92,9 +92,7 @@ class Issue:
     def load_fields(self, fields):
         self.title = replace_bug_links(fields["short_desc"])
         self.sudo = gitlab_userid(fields["reporter"])
-        self.assignee_ids = [
-            gitlab_userid(fields["assigned_to"])
-        ]
+        self.assignee_ids = [ gitlab_userid(fields["assigned_to"]) ] if gitlab_user(fields["assigned_to"]) != CONF.gitlab_misc_user else [ ]
         self.created_at = format_utc(fields["creation_ts"])
         self.status = fields["bug_status"]
         self.create_labels(
