@@ -139,9 +139,12 @@ def replace_bug_links(comment):
     res = (
         (r'\(In reply to comment #(\d+)\)',r''),
         (r'\(In reply to (.*?) from comment #(\d+)\)',r''),
-        (r'#(\d+)',r'#&#8203;\1'), # Insert "zero width space" character
-        (r'@(\w+)',r'@&#8203;\1'), # Insert "zero width space" character
-        (r'!(\d+)',r'@&#8203;\1'), # Insert "zero width space" character
+        (r'^#(\d+)',r'#&#8203;\1'), # Insert "zero width space" character
+        (r'^@(\w+)',r'@&#8203;\1'), # Insert "zero width space" character
+        (r'^!(\d+)',r'@&#8203;\1'), # Insert "zero width space" character
+        (r' #(\d+)',r'#&#8203;\1'), # Insert "zero width space" character
+        (r' @(\w+)',r'@&#8203;\1'), # Insert "zero width space" character
+        (r' !(\d+)',r'@&#8203;\1'), # Insert "zero width space" character
         (r'(http://|https://)?' + re.escape("bugs.llvm.org/show_bug.cgi?id=") + "(\d+)", r'#\2 '),
         (r'(http://|https://)?(llvm.org/)?PR(\d+)', r'#\3 '),
         (r'duplicate of bug (\d+)', r'duplicate of bug #\1 '),
