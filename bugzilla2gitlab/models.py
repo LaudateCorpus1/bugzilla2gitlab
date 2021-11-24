@@ -470,7 +470,7 @@ class Attachment:
     def save(self):
         url = "{}/attachment.cgi?id={}".format(CONF.bugzilla_base_url, self.id)
         result = _perform_request(url, "get", json=False, verify=CONF.verify)
-        filename = self.parse_file_name(result.headers)
+        filename = str(self.id) + "_" + self.parse_file_name(result.headers)
         if CONF.gzip:
             filename += ".gz"
 
