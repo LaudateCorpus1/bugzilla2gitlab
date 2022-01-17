@@ -1,0 +1,204 @@
+Build scripts:
+  cmake: cmake
+Documentation:
+  Doxygen: documentation
+  General docs: documentation
+LNT:
+  LNT: LNT
+MLIR:
+  Affine Dialect: mlir:affine
+  Core: mlir:core
+  Docs: mlir:docs
+  GPU CodeGen: mlir:gpu
+  LLVM CodeGen: mlir:llvm
+  Linalg Dialect: mlir:linalg
+  SPIR-V CodeGen: mlir:spirv
+  SPIR-V Dialect: mlir:spirv
+  Vector Ops Dialect: mlir:vectorops
+  default: mlir:core
+OpenMP:
+  Clang Compiler Support: openmp
+  Runtime Library: openmp
+Packaging:
+  Windows Installer: packaging
+  binary tarballs: packaging
+  deb packages: packaging
+  source tarballs: packaging
+Polly:
+  Optimizer: polly
+  Other: polly
+  Website: polly
+  isl: polly
+Runtime Libraries:
+  crtend library: compiler-rt
+  libc: libc
+  libprofile library: compiler-rt
+  libunwind: libunwind
+  other: compiler-rt
+Test Suite:
+  DejaGNU: test-suite
+  Nightly Tester: test-suite
+  Programs Tests: test-suite
+  QMTest: test-suite
+  lit: test-suite
+Website:
+  Documentation: website
+  General Website: website
+  Phabricator: website
+  Publications: website
+XRay:
+  Clang: xray
+  Compiler instrumentation: xray
+  Runtime: xray
+  Tools: xray
+clang:
+  -New Bugs: clang
+  C: c
+  C++: c++
+  C++11: c++1
+  C++14: c++14
+  C++17: c++17
+  C++2a: c++20
+  C++2b: c++20
+  C11: c11
+  C18: c18
+  C2x: c2x
+  CUDA: cuda
+  Documentation: documentation
+  Driver: clang:driver
+  Formatter: clang-format
+  Frontend: clang:frontend
+  Headers: clang:headers
+  LLVM Codegen: clang:codegen
+  Modules: clang:modules
+  OpenCL: opencl
+  OpenMP: openmp
+  Static Analyzer: clang:static analyzer
+  Tooling: clang:tooling
+  libclang: libclang
+clang-tools-extra:
+  C++11 Migrator: clang-tools-extra
+  Infrastructure: clang-tools-extra
+  Other: clang-tools-extra
+  clang-doc: clang-tools-extra
+  clang-query: clang-query
+  clang-tidy: clang-tidy
+  clangd: clangd
+compiler-rt:
+  asan: compiler-rt:asan
+  builtins: compiler-rt:builtins
+  cfi: compiler-rt:cfi
+  compiler-rt: compiler-rt
+  dfsan: compiler-rt
+  esan: compiler-rt
+  fuzzer: compiler-rt:fuzzer
+  hwasan: compiler-rt:hwasan
+  lsan: compiler-rt
+  msan: compiler-rt
+  profile: compiler-rt
+  scudo: compiler-rt:scudo
+  tsan: compiler-rt:tsan
+  ubsan: compiler-rt:ubsan
+  xray: xray
+flang:
+  Build System: flang:build
+  Driver: flang:driver
+  Fortran IR: flang:ir
+  Frontend: flang:frontend
+  Runtime: flang:runtime
+libc++:
+  All Bugs: libc++
+  Standards Issues: libc++
+libc++abi:
+  All Bugs: libc++
+libraries:
+  'Backend: AArch64': backend:AArch64
+  'Backend: AMDGPU': backend:AMDGPU
+  'Backend: ARM': backend:ARM
+  'Backend: AVR': backend:AVR
+  'Backend: BPF': backend:BPF
+  'Backend: Hexagon': backend:Hexagon
+  'Backend: M68k': backend:m68k
+  'Backend: MIPS': backend:MIPS
+  'Backend: MSP430': backend:MPS430
+  'Backend: PTX': backend:PTX
+  'Backend: PowerPC': backend:PowerPC
+  'Backend: RISC-V': backend:RISC-V
+  'Backend: Sparc': backend:Sparc
+  'Backend: SystemZ': backend:SystemZ
+  'Backend: WebAssembly': backend:WebAssembly
+  'Backend: X86': backend:X86
+  'Backend: XCore': backend:XCore
+  Bitcode Reader: llvm:bitcode
+  Bitcode Writer: llvm:bitcode
+  Common Code Generator Code: llvm:codegen
+  Core LLVM classes: llvm:core
+  DebugInfo: debuginfo
+  GlobalISel: globalisel
+  Interprocedural Analyses: ipa
+  Interprocedural Optimizations: ipo
+  LLVM assembly language parser: llvm:asmparser
+  Loop Optimizer: loopoptim
+  MC: mc
+  MCJIT: mcjit
+  Object: object
+  OrcJIT: orcjit
+  Register Allocator: regalloc
+lld:
+  All Bugs: lld
+  COFF: lld
+  ELF: lld
+  MachO: lld
+  wasm: lld
+lldb:
+  All Bugs: lldb
+parallel STL:
+  New: pstl
+tools:
+  TableGen: tablegen
+  analyze: llvm-tools
+  bugpoint: tools:bugpoint
+  extract: llvm-tools
+  gccas: llvm-tools
+  gccld: llvm-tools
+  gfortran: llvm-tools
+  gnat: llvm-tools
+  gold-plugin: llvm-tools
+  llc: tools:llc
+  llee: llvm-tools
+  lli: llvm-tools
+  llvm-ar: tools:llvm-ar/llvm-ranlib
+  llvm-as: tools:llvm-as
+  llvm-bcanalyzer: llvm-tools
+  llvm-c++filt: llvm-tools
+  llvm-config: llvm-tools
+  llvm-db: llvm-tools
+  llvm-diff: llvm-tools
+  llvm-dis: llvm-tools
+  llvm-dsymutil: llvm-tools
+  llvm-dwarfdump: tools:llvm-dwarfdump
+  llvm-exegesis: tools:llvm-exegesis
+  llvm-g++: llvm-tools
+  llvm-gcc: llvm-tools
+  llvm-ld: llvm-tools
+  llvm-link: tools:llvm-link
+  llvm-lipo: llvm-tools
+  llvm-lit: tools:llvm-lit
+  llvm-mca: llvm-tools
+  llvm-ml: llvm-tools
+  llvm-nm: tools:llvm-nm
+  llvm-objcopy/strip: tools:llvm-objcopy/strip
+  llvm-objdump: tools:llvm-objdump
+  llvm-ranlib: tools:llvm-ar/llvm-ranlib
+  llvm-readobj: tools:llvm-readobj/llvm-readelf
+  llvm-reduce: llvm-tools
+  llvm-size: tools:llvm-size
+  llvm-strings: tools:llvm-strings
+  llvm-symbolizer: tools:llvm-symbolizer/addr2line
+  llvm-upgrade: llvm-tools
+  llvm2cpp: llvm-tools
+  llvmc: llvm-tools
+  lto: llvm-tools
+  opt: tools:opt
+  opt-viewer: llvm-tools
+  support scripts: llvm-tools
